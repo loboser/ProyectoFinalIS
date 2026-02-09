@@ -204,3 +204,66 @@ Para asegurar un desarrollo de alta calidad y mantener la integridad del proyect
 - **Sincronización Continua:** La ejecución constante de git pull antes de iniciar cualquier tarea garantiza que el desarrollador trabaje siempre sobre la última línea base común.
 
 ---
+
+# 3. Análisis Comparativo: GitFlow vs. GitHub Flow (Trunk-Based)
+
+Para la fundamentación de este proyecto, hemos contrastado el modelo seleccionado (**GitFlow**) con la estrategia moderna de **GitHub Flow**, la cual es una implementación práctica de la metodología conocida teóricamente como *Trunk-Based Development* (TBD). Basándonos en la bibliografía analizada, presentamos las diferencias clave y la justificación de nuestra elección.
+
+## 3.1 GitFlow (Modelo de Releases)
+Es el modelo tradicional publicado por Vincent Driessen. Se caracteriza por un uso estricto de ramas con roles específicos y ciclos de vida largos.
+* **Enfoque:** Orientado a proyectos con **lanzamientos programados** (Software empaquetado) donde la estabilidad es prioritaria sobre la velocidad de despliegue.
+* **Estructura:** Separa estrictamente el código en preparación (`develop`) del código en producción (`main`), utilizando ramas auxiliares para funcionalidades (`features`), lanzamientos (`releases`) y correcciones rápidas (`hotfixes`).
+
+**Ventajas:**
+* **Desarrollo Paralelo Seguro:** Aísla el desarrollo de nuevas características (features) del código en producción, permitiendo que múltiples equipos trabajen simultáneamente sin interrupciones.
+* **Gestión de Urgencias:** Las ramas `hotfix` permiten corregir errores críticos en producción de manera inmediata sin mezclar cambios inestables de la rama de desarrollo.
+* **Orden y Estructura:** Define un flujo de trabajo estricto que minimiza errores humanos al tener reglas claras sobre dónde y cuándo integrar cambios.
+
+**Desventajas:**
+* **Complejidad de Gestión:** Introduce un número elevado de ramas y fusiones que requieren una administración rigurosa y disciplina por parte del equipo.
+* **Retrasos en Entregas:** La necesidad de esperar a completar una `release` para desplegar puede ralentizar la entrega de valor, siendo menos apto para Integración Continua.
+* **Curva de Aprendizaje:** Puede resultar difícil de dominar para nuevos miembros debido a la rigidez del protocolo.
+
+## 3.2 GitHub Flow / Trunk-Based Development (Modelo de CI/CD)
+Es un modelo ágil donde los desarrolladores colaboran en una única rama central (el "tronco" o `main`), resistiendo la creación de ramas de larga duración.
+
+**¿Cómo funciona el TBD?**
+En el Trunk-Based Development (TBD), la dinámica de trabajo cambia radicalmente respecto a los modelos tradicionales:
+
+* **Centralización en el Tronco:** Los desarrolladores trabajan la mayor parte del tiempo directamente en la rama principal o en ramas de vida muy corta, evitando la creación de ramas de larga duración que se desvíen del código base.
+* **Enfoque en Entrega Continua (CD):** Las ramas son pequeñas y contienen solo una parte de la funcionalidad (*feature*) a implementar. Esto facilita enormemente el proceso de *merging*.
+* **Reducción de Riesgos:** 
+* **Uso de Feature Flags:** A menudo se combina con *feature toggles* (interruptores), lo que permite desplegar código en producción pero mantener la funcionalidad "apagada" para el usuario final. Esto permite revertir cambios instantáneamente si se descubre algún error crítico sin necesidad de deshacer el despliegue.
+* **Ventaja:** Reduce la complejidad de gestión de ramas (el "infierno de fusiones") y acelera el *Time-to-Market*, siendo ideal para equipos DevOps y aplicaciones web SaaS.
+
+![Diagrama de Trunk-Based Development](img/trunk-based-diagram.png)
+*Figura 3.2: Esquema de ramas de vida corta en Trunk-Based Development.*
+
+**Ventajas:**
+* **Agilidad y Velocidad:** Integra cambios pequeños frecuentemente, reduciendo el tiempo entre desarrollo y despliegue.
+* **Reducción de Conflictos:** Al integrar cambios pequeños y frecuentes, se evitan las largas correcciones de errores y los problemas complejos que ocasiona la fusión de grandes ramas (*Merge Hell*).
+* **Retroalimentación Rápida:** Facilita la detección de errores casi al instante mediante pruebas automatizadas.
+
+**Desventajas:**
+* **Riesgo de Inestabilidad:** Un error en `main` puede afectar a todo el equipo inmediatamente.
+* **Dependencia de Automatización:** Requiere infraestructura de pruebas automáticas sólida para ser seguro.
+
+## 3.3 Cuadro Comparativo Técnico
+A continuación, presentamos una comparativa directa basada en los atributos de cada estrategia :
+
+| Característica | GitFlow (Seleccionado) | GitHub Flow (TBD) |
+| :--- | :--- | :--- |
+| **Contexto Ideal** | Proyectos con ciclos de desarrollo extensos y versiones definidas. | Proyectos DevOps/Ágiles con despliegue continuo. |
+| **Estructura de Ramas** | **Compleja:** `main`, `develop`, `feature/*`, `release/*`, `hotfix/*`. | **Simple:** Única rama `main` y ramas temporales cortas. |
+| **Frecuencia de Integración** | Media/Baja. Se integra al finalizar funcionalidades completas. | Alta. Múltiples integraciones al día (Commits pequeños). |
+| **Gestión de Errores** | Ramas específicas (`hotfix`) para no detener el desarrollo en `develop`. | Corrección directa sobre el tronco (`fix forward`) o reversión rápida. |
+| **Riesgo de Conflictos** | Alto en integraciones tardías ("Merge Hell"). | Bajo, debido a integraciones frecuentes y pequeñas. |
+
+## 3.4 Conclusión (Parcial)
+Para el presente Trabajo Práctico de Ingeniería de Software II, hemos seleccionado **GitFlow** por las siguientes razones:
+1.  **Simulación de Roles:** Permite asignar roles claros (Release Manager, Developers) y gestionar permisos diferenciados, algo educativo en un entorno académico.
+2.  **Versiones Definidas:** Al ser una entrega académica con una fecha fija, el modelo de "Release" de GitFlow se adapta mejor que el despliegue continuo de GitHub Flow.
+3.  **Seguridad:** La existencia de la rama `develop` actúa como un "colchón" de seguridad antes de tocar la rama `main`, protegiendo la entrega final de errores en desarrollo.
+
+---
+
